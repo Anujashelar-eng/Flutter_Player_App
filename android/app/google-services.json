@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "396444083685",
+    "project_id": "playerapp-21da9",
+    "storage_bucket": "playerapp-21da9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396444083685:android:b87beec257d206fe313b0c",
+        "android_client_info": {
+          "package_name": "com.cmp.player_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVpEvAjt064ZP9VsP8cbRp8fDXVoMnq6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396444083685:android:7cfeee47c56d0bd1313b0c",
+        "android_client_info": {
+          "package_name": "com.trl.playerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVpEvAjt064ZP9VsP8cbRp8fDXVoMnq6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
