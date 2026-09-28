@@ -7,6 +7,8 @@ import 'package:player_app/custom_snackbar.dart';
 import 'package:player_app/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'model/player_model.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,10 +18,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController nameController=TextEditingController();
-  final TextEditingController jerseyController=TextEditingController();
+  final TextEditingController jerNoController=TextEditingController();
   final TextEditingController imageController=TextEditingController();
 
   final FirebaseFirestore _firebaseFirestoreObj=FirebaseFirestore.instance;
+
+  //Player List
+  List<PlayerModel> playerList=[];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height:20),
           TextField(
-            controller:jerseyController,
+            controller:jerNoController,
             keyboardType:TextInputType.number,
             decoration: InputDecoration(
               hintText: "Jersey Number",
@@ -71,18 +77,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ElevatedButton(onPressed: () async{
             FocusScope.of(context).unfocus(); //keyboard down for snackbar
             if(nameController.text.trim().isNotEmpty &&
-                jerseyController.text.trim().isNotEmpty &&
+                jerNoController.text.trim().isNotEmpty &&
                 imageController.text.trim().isNotEmpty
             ){
               //DATA
               Map<String,dynamic> obj={
                 "playerName":nameController.text,
-                "jerNo":jerseyController.text,
+                "jerNo":jerNoController.text,
                 "playerImage":imageController.text,
               };
                 await _firebaseFirestoreObj.collection("PlayerData").add(obj);
                 nameController.clear();
-                jerseyController.clear();
+                jerNoController.clear();
                 imageController.clear();
                 CustomSnackBar().showCustomSnackbar(context, "Data added successfully",bgColor: Colors.green);
                 setState(() {
@@ -95,23 +101,52 @@ class _HomeScreenState extends State<HomeScreen> {
           }, child: Text("Add Data"),),
           SizedBox(height:20),
           ElevatedButton(onPressed: ()async{
+            //Implemented Cloud Firestore database and GetX state management.
+            playerList.clear(); //Local List Will get Clear and Fill newly Every time
             QuerySnapshot playerData=await _firebaseFirestoreObj.collection("PlayerData").get();
 
             log("Player Data:${playerData.docs.length}");
 
             for(int i=0;i<playerData.docs.length;i++){
-              log("Player Name: ${playerData.docs[i].id}");
-            }
-          }, child:Text("Get Data")),
+              log("Player Name: ${playerData.docs[i]['playerName']}");
+              log("id: ${playerData.docs[i].id}");
+
+              PlayerModel playerModelObj=PlayerModel(playerName: playerData.docs[i]['playerName'],
+                  jerNo: playerData.docs[i]['jerNo'],
+                  playerImage: playerData.docs[i]['playerImage'],
+                  id: playerData.docs[i].id);
+              playerList.add(playerModelObj);
+              log("data added");
+
+            }//for loop
+            log("Player List Length: ${playerList.length}");
+            setState(() {
+
+            });
+          }, child:Text("Get Data"),),
 
           SizedBox(height: 20,),
 
           //Display Data
           ListView.builder(
-            itemCount: 10,
+            itemCount: playerList.length,
             shrinkWrap:true,
             itemBuilder:(context,index){
-              return Container();
+              return ListTile(
+                leading:Image.network(playerList[index].playerImage),
+                title:Text(playerList[index].playerName,style:TextStyle(fontSize: 20)),
+                subtitle: Text(playerList[index].jerNo,style:TextStyle(fontSize: 20)),
+                trailing: IconButton(onPressed: () async{
+                  await _firebaseFirestoreObj.collection("playerData").doc(playerList[index].id).delete();
+
+                  playerList.remove(index);
+                  CustomSnackBar().showCustomSnackbar(context, "Data Deleted!",bgColor:Colors.green);
+                  setState(() {
+
+                  });
+                }, icon: Icon(Icons.delete)),
+                
+              );
             } ,
 
           ),
