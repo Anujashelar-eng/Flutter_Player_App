@@ -3,11 +3,11 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:player_app/custom_snackbar.dart';
-import 'package:player_app/login_screen.dart';
+import 'package:player_app/widgets/custom_snackbar.dart';
+import 'package:player_app/view/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'model/player_model.dart';
+import '../model/player_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

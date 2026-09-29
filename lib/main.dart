@@ -1,7 +1,8 @@
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
-import "package:player_app/login_screen.dart";
-import "package:player_app/splash_screen.dart";
+import "package:player_app/view/login_screen.dart";
+import "package:player_app/view/player_info.dart";
+import "package:player_app/view/splash_screen.dart";
 
 Future <void> main()async{
   await WidgetsFlutterBinding.ensureInitialized(); //It Start the Flutter Engine,It Calls Firebase Native and Native call enable/Initialize That
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget{
   Widget build(BuildContext context){
     return MaterialApp(
       debugShowCheckedModeBanner: true,
-      home:SplashScreen(),
+      home:PlayerInfo(),
     );
   }
 }

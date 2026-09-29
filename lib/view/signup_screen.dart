@@ -1,30 +1,20 @@
 import "dart:developer";
 
+import "Package:flutter/material.dart";
 import "package:firebase_auth/firebase_auth.dart";
-import "package:flutter/material.dart";
-import "package:player_app/home_screen.dart";
-import "package:player_app/signup_screen.dart";
-import "package:shared_preferences/shared_preferences.dart";
+import "package:player_app/widgets/custom_snackbar.dart";
 
-import "custom_snackbar.dart";
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-
-  FirebaseAuth _firebaseAuth =FirebaseAuth.instance;
+class SignupScreen extends StatelessWidget {
+  SignupScreen({super.key});
   TextEditingController emailController=TextEditingController();
   TextEditingController passwordController=TextEditingController();
 
+  FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:AppBar(
-        title:Text("Login Screen"),
+        title:Text("SignUp Screen"),
         backgroundColor: Colors.blue,
         centerTitle: true,
       ),
@@ -52,36 +42,24 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 30,),
 
             ElevatedButton(onPressed: ()async{
-
               if(emailController.text.trim().isNotEmpty && passwordController.text.trim().isNotEmpty){
-                try {
-                  UserCredential userCredential = await _firebaseAuth
-                      .signInWithEmailAndPassword(email: emailController.text,
-                      password: passwordController.text);
-                  log("${userCredential.user}");
-                  log("${userCredential.user!.uid}");
-                  final prefs = await SharedPreferences.getInstance();
-
-                  await prefs.setBool("isLogin",true);
-                  await prefs.setString("uid", userCredential.user!.uid);
-                  await prefs.setString("email", userCredential.user!.email!);
-                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>HomeScreen()));
-
+                try{
+                UserCredential userCredentialObj=await _firebaseAuth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                log("user credentials: ${userCredentialObj}");
+                CustomSnackBar().showCustomSnackbar(context, "login successful",bgColor: Colors.green);
+                Navigator.of(context).pop();
+                emailController.clear();
+                passwordController.clear();
                 }on FirebaseAuthException catch(error){
                   CustomSnackBar().showCustomSnackbar(context, error.message!,bgColor: Colors.red);
                 }
               }else{
                 CustomSnackBar().showCustomSnackbar(context, "Enter valid data",bgColor:Colors.red);
               }
-            }, child: Text("Login")),
+            }, child: Text("Sign Up"),
+            ),
             SizedBox(height:20),
-            TextButton(onPressed: (){
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (context){
-                return SignupScreen();
-              }));
-            },child: Text("New User? Sign Up",style:TextStyle(fontSize: 15)),)
+
           ],
         ),
       ),
